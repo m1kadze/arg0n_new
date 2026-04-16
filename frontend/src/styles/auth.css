@@ -166,23 +166,39 @@
   transform: translateX(-1px);
 }
 
-/* Confirm-password reveal — smooth grid collapse */
+/* Confirm-password reveal — smooth grid collapse.
+   overflow:hidden is required to clip content while closed,
+   but it also clips focus-glow and translateY(-1px) on hover.
+   Workaround: delay the overflow swap until the open transition
+   finishes; on close, switch back to hidden immediately. */
 .auth-confirm-wrap {
   display: grid;
   grid-template-rows: 0fr;
   opacity: 0;
   transform: translateY(-4px);
+  overflow: hidden;
+  /* margin allows glow ring (box-shadow inset -1px + 4px ring)
+     to breathe without visible gap when closed */
+  margin: 0 -6px;
+  padding: 0 6px;
   transition:
     grid-template-rows 0.45s var(--auth-ease),
     opacity 0.35s var(--auth-ease),
-    transform 0.45s var(--auth-ease);
-  overflow: hidden;
+    transform 0.45s var(--auth-ease),
+    overflow 0s linear 0s;
 }
 
 .auth-confirm-wrap.is-open {
   grid-template-rows: 1fr;
   opacity: 1;
   transform: translateY(0);
+  overflow: visible;
+  transition:
+    grid-template-rows 0.45s var(--auth-ease),
+    opacity 0.35s var(--auth-ease),
+    transform 0.45s var(--auth-ease),
+    /* overflow flips to visible only AFTER reveal finishes */
+    overflow 0s linear 0.45s;
 }
 
 .auth-confirm-wrap > * {

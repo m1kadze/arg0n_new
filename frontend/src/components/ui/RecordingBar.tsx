@@ -145,10 +145,6 @@ export const RecordingBar: React.FC<RecordingBarProps> = ({
         ))}
       </div>
 
-      <span className="rec-bar__hint" aria-hidden>
-        отпустите, чтобы отправить
-      </span>
-
       <button
         type="button"
         className="rec-bar__send"
