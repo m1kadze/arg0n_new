@@ -1,5 +1,6 @@
 import React, { Suspense, lazy, useEffect, useState } from 'react';
 import { App as AntdApp, ConfigProvider, Spin, theme } from 'antd';
+import { Logo } from './components/ui/Logo';
 import { AuthController } from './core/AuthController';
 import { api, getAuthToken, setAuthToken } from './core/api';
 import type { AuthResponse, UserPublic } from './core/types';
@@ -89,10 +90,10 @@ const App: React.FC = () => {
                 onProfileUpdated={setCurrentUser}
               />
             ) : (
-              <AuthForm
-                controller={authController}
-                onAuthenticated={handleAuthenticated}
-              />
+              <div className="auth-screen">
+                <Logo />
+                <AuthForm controller={authController} onAuthenticated={handleAuthenticated} />
+              </div>
             )}
           </Suspense>
         )}
