@@ -1,35 +1,75 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { Pause, Play } from 'lucide-react';
-
-const formatTime = (value: number): string => {
-  if (!Number.isFinite(value)) {
-    return '00:00';
-  }
-  const minutes = Math.floor(value / 60);
-  const seconds = Math.floor(value % 60);
-  return `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
-};
 
 interface AudioPlayerProps {
   src: string;
   title?: string;
 }
 
+const BAR_COUNT = 44;
+
+/* ---------- deterministic waveform generator ---------- */
+
+const hashString = (input: string): number => {
+  let h = 2166136261;
+  for (let i = 0; i < input.length; i++) {
+    h ^= input.charCodeAt(i);
+    h = Math.imul(h, 16777619);
+  }
+  return h >>> 0;
+};
+
+const makeBars = (seedSource: string, count: number): number[] => {
+  let seed = hashString(seedSource) || 1;
+  const raw: number[] = [];
+  for (let i = 0; i < count; i++) {
+    seed ^= seed << 13;
+    seed >>>= 0;
+    seed ^= seed >>> 17;
+    seed >>>= 0;
+    seed ^= seed << 5;
+    seed >>>= 0;
+    // 22..100
+    raw.push(22 + (seed % 79));
+  }
+  // Moving-average smoothing — voice memos look organic, not spiky
+  const smoothed = raw.map((_, i) => {
+    const a = raw[Math.max(0, i - 1)];
+    const b = raw[i];
+    const c = raw[Math.min(raw.length - 1, i + 1)];
+    return Math.round((a + b + c) / 3);
+  });
+  return smoothed;
+};
+
+const formatTime = (value: number): string => {
+  if (!Number.isFinite(value) || value < 0) return '0:00';
+  const minutes = Math.floor(value / 60);
+  const seconds = Math.floor(value % 60);
+  return `${minutes}:${String(seconds).padStart(2, '0')}`;
+};
+
+/* ---------- component ---------- */
+
 export const AudioPlayer: React.FC<AudioPlayerProps> = ({ src, title }) => {
   const audioRef = useRef<HTMLAudioElement | null>(null);
+  const waveRef = useRef<HTMLDivElement | null>(null);
   const [isPlaying, setIsPlaying] = useState(false);
   const [duration, setDuration] = useState(0);
   const [currentTime, setCurrentTime] = useState(0);
 
+  const bars = useMemo(() => makeBars(src, BAR_COUNT), [src]);
+
   useEffect(() => {
     const audio = audioRef.current;
-    if (!audio) {
-      return;
-    }
+    if (!audio) return undefined;
 
     const handleLoaded = () => setDuration(audio.duration || 0);
     const handleTime = () => setCurrentTime(audio.currentTime || 0);
-    const handleEnded = () => setIsPlaying(false);
+    const handleEnded = () => {
+      setIsPlaying(false);
+      setCurrentTime(0);
+    };
 
     audio.addEventListener('loadedmetadata', handleLoaded);
     audio.addEventListener('timeupdate', handleTime);
@@ -44,10 +84,7 @@ export const AudioPlayer: React.FC<AudioPlayerProps> = ({ src, title }) => {
 
   const togglePlay = async () => {
     const audio = audioRef.current;
-    if (!audio) {
-      return;
-    }
-
+    if (!audio) return;
     if (isPlaying) {
       audio.pause();
       setIsPlaying(false);
@@ -61,35 +98,90 @@ export const AudioPlayer: React.FC<AudioPlayerProps> = ({ src, title }) => {
     }
   };
 
-  const handleSeek = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const seekAtClientX = (clientX: number) => {
+    const wave = waveRef.current;
     const audio = audioRef.current;
-    if (!audio) {
-      return;
-    }
-    const value = Number(event.target.value);
-    audio.currentTime = value;
-    setCurrentTime(value);
+    if (!wave || !audio || !duration) return;
+    const rect = wave.getBoundingClientRect();
+    const ratio = Math.max(0, Math.min(1, (clientX - rect.left) / rect.width));
+    audio.currentTime = ratio * duration;
+    setCurrentTime(ratio * duration);
   };
 
+  const handleWaveClick = (e: React.MouseEvent<HTMLDivElement>) => {
+    seekAtClientX(e.clientX);
+  };
+
+  const handleWaveKey = (e: React.KeyboardEvent<HTMLDivElement>) => {
+    const audio = audioRef.current;
+    if (!audio || !duration) return;
+    if (e.key === 'ArrowLeft') {
+      audio.currentTime = Math.max(0, audio.currentTime - 3);
+      setCurrentTime(audio.currentTime);
+    } else if (e.key === 'ArrowRight') {
+      audio.currentTime = Math.min(duration, audio.currentTime + 3);
+      setCurrentTime(audio.currentTime);
+    }
+  };
+
+  const progress = duration > 0 ? currentTime / duration : 0;
+  const progressPct = Math.max(0, Math.min(1, progress)) * 100;
+  const displayTime = currentTime > 0 ? currentTime : duration;
+
   return (
-    <div className="audio-player">
+    <div className={`voice-player ${isPlaying ? 'is-playing' : ''}`}>
       <audio ref={audioRef} src={src} preload="metadata" />
-      <button type="button" className="audio-control" onClick={togglePlay}>
-        {isPlaying ? <Pause size={16} /> : <Play size={16} />}
+
+      <button
+        type="button"
+        className="voice-player__btn"
+        onClick={togglePlay}
+        aria-label={isPlaying ? 'Пауза' : 'Воспроизвести'}
+        aria-pressed={isPlaying}
+      >
+        <span className="voice-player__btn-ripple" aria-hidden />
+        {isPlaying ? <Pause size={15} /> : <Play size={15} />}
       </button>
-      <div className="audio-info">
-        {title && <div className="audio-title">{title}</div>}
-        <div className="audio-progress">
-          <input
-            type="range"
-            min={0}
-            max={duration || 0}
-            value={currentTime}
-            onChange={handleSeek}
-          />
-          <div className="audio-time">
-            {formatTime(currentTime)} / {formatTime(duration)}
+
+      <div className="voice-player__body">
+        {title ? <div className="voice-player__title">{title}</div> : null}
+
+        <div
+          ref={waveRef}
+          className="voice-player__wave"
+          role="slider"
+          tabIndex={0}
+          aria-label="Перемотка"
+          aria-valuemin={0}
+          aria-valuemax={100}
+          aria-valuenow={Math.round(progressPct)}
+          aria-valuetext={`${formatTime(currentTime)} из ${formatTime(duration)}`}
+          onClick={handleWaveClick}
+          onKeyDown={handleWaveKey}
+          style={{ '--voice-progress': `${progressPct}%` } as React.CSSProperties}
+        >
+          <div className="voice-player__wave-layer voice-player__wave-layer--base" aria-hidden>
+            {bars.map((h, i) => (
+              <span
+                key={`b-${i}`}
+                className="voice-player__bar"
+                style={{ '--h': `${h}%` } as React.CSSProperties}
+              />
+            ))}
           </div>
+          <div className="voice-player__wave-layer voice-player__wave-layer--fill" aria-hidden>
+            {bars.map((h, i) => (
+              <span
+                key={`f-${i}`}
+                className="voice-player__bar"
+                style={{ '--h': `${h}%` } as React.CSSProperties}
+              />
+            ))}
+          </div>
+        </div>
+
+        <div className="voice-player__time" aria-live="off">
+          {formatTime(displayTime)}
         </div>
       </div>
     </div>

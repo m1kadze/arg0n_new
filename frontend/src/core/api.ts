@@ -10,6 +10,48 @@ import type {
 
 const AUTH_TOKEN_KEY = 'auth_token';
 
+// Translation of backend HTTPException details → Russian
+const ERROR_DICT: Record<string, string> = {
+  'Invalid token': 'Недействительный токен',
+  'User not found': 'Пользователь не найден',
+  'Invalid credentials': 'Неверный логин или пароль',
+  'Username already exists': 'Такой логин уже занят',
+  'Chat not found': 'Чат не найден',
+  'Message not found': 'Сообщение не найдено',
+  'Participant not found': 'Участник не найден',
+  'Webhook not found': 'Вебхук не найден',
+  'Reply message not found': 'Исходное сообщение не найдено',
+  'Forward author not found': 'Автор пересылаемого сообщения не найден',
+  'Owner not found': 'Владелец не найден',
+  'Only owner can post in channel': 'Публиковать в канал может только владелец',
+  'Only owner can post in favorites': 'В избранное может писать только владелец',
+  'You are blocked by this user': 'Этот пользователь вас заблокировал',
+  'You blocked this user': 'Вы заблокировали этого пользователя',
+  'Cannot block yourself': 'Нельзя заблокировать самого себя',
+  'Cannot chat with yourself': 'Нельзя создать чат с самим собой',
+  'Cannot edit this message': 'Это сообщение нельзя редактировать',
+  'Cannot delete this message': 'Это сообщение нельзя удалить',
+  'Cannot delete favorites': 'Нельзя удалить избранное',
+  'Only text messages can be edited': 'Редактировать можно только текстовые сообщения',
+  'Emoji is required': 'Укажите эмодзи',
+  'Title is required': 'Укажите название',
+  'Chat has no other participant': 'В чате нет других участников',
+  'WebSocket endpoint. Use ws/wss with Upgrade headers.':
+    'Это WebSocket-эндпоинт. Используйте ws/wss с Upgrade-заголовками.',
+};
+
+const translateError = (detail: string): string => {
+  if (!detail) return detail;
+  const trimmed = detail.trim();
+  if (ERROR_DICT[trimmed]) return ERROR_DICT[trimmed];
+  // fallback: try partial/case-insensitive match
+  const lower = trimmed.toLowerCase();
+  for (const [en, ru] of Object.entries(ERROR_DICT)) {
+    if (lower === en.toLowerCase()) return ru;
+  }
+  return detail;
+};
+
 export const API_BASE_URL =
   (import.meta as { env?: Record<string, string> }).env?.VITE_API_URL ||
   '/api';
@@ -71,7 +113,7 @@ export const apiRequest = async <T>(
         detail = rawText;
       }
     }
-    throw new Error(detail);
+    throw new Error(translateError(detail));
   }
 
   if (response.status === 204) {

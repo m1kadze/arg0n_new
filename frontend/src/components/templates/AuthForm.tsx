@@ -134,8 +134,11 @@ export const AuthForm: React.FC<AuthFormProps> = ({
           </div>
         </div>
 
-        {!isLogin && (
-          <div className="tg-input-group" style={{ animation: 'fadeIn 0.5s' }}>
+        <div
+          className={`auth-confirm-wrap ${!isLogin ? 'is-open' : ''}`}
+          aria-hidden={isLogin}
+        >
+          <div className="tg-input-group" style={{ marginBottom: 0 }}>
             <div className="tg-custom-input-wrapper">
               <Lock size={20} color="#707579" style={{ marginRight: 10 }} />
               <Form.Item<FieldType>
@@ -151,7 +154,7 @@ export const AuthForm: React.FC<AuthFormProps> = ({
               </Form.Item>
             </div>
           </div>
-        )}
+        </div>
 
         <Form.Item style={{ marginTop: '30px' }}>
           <Button

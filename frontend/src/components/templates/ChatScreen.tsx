@@ -34,6 +34,7 @@ import type {
   WebhookEvent,
 } from '../../core/types';
 import { AudioPlayer } from '../ui/AudioPlayer';
+import { RecordingBar } from '../ui/RecordingBar';
 import {
   useChats,
   useMessages,
@@ -267,7 +268,7 @@ export const ChatScreen: React.FC<ChatScreenProps> = ({
   const [attachments, setAttachments] = useState<File[]>([]);
   const [sending, setSending] = useState(false);
   const [recording, setRecording] = useState(false);
-  const [recordingElapsed, setRecordingElapsed] = useState(0);
+  // RecordingBar tracks elapsed time internally; we just keep a boolean here.
   const [viewer, setViewer] = useState<ViewerState | null>(null);
   const [viewerZoom, setViewerZoom] = useState(1);
   const [editingMessageId, setEditingMessageId] = useState<number | null>(null);
@@ -307,6 +308,9 @@ export const ChatScreen: React.FC<ChatScreenProps> = ({
   const fileInputRef = useRef<HTMLInputElement | null>(null);
   const recorderRef = useRef<MediaRecorder | null>(null);
   const recordedChunksRef = useRef<Blob[]>([]);
+  const recordingStreamRef = useRef<MediaStream | null>(null);
+  const recordingCancelledRef = useRef<boolean>(false);
+  const [recordingStream, setRecordingStream] = useState<MediaStream | null>(null);
   const composerRef = useRef<HTMLDivElement | null>(null);
   const profileAvatarInputRef = useRef<HTMLInputElement | null>(null);
 
@@ -367,18 +371,6 @@ export const ChatScreen: React.FC<ChatScreenProps> = ({
   useEffect(() => {
     writeStorage(BLOCKED_USERS_KEY, blockedUserIds);
   }, [blockedUserIds]);
-
-  useEffect(() => {
-    if (!recording) {
-      setRecordingElapsed(0);
-      return;
-    }
-    const start = Date.now();
-    const intervalId = window.setInterval(() => {
-      setRecordingElapsed(Date.now() - start);
-    }, 500);
-    return () => window.clearInterval(intervalId);
-  }, [recording]);
 
   useEffect(() => {
     const previews = attachments.map((file) => {
@@ -737,6 +729,7 @@ export const ChatScreen: React.FC<ChatScreenProps> = ({
         mimeCandidates.find((type) => MediaRecorder.isTypeSupported?.(type)) || '';
       const recorder = new MediaRecorder(stream, mimeType ? { mimeType } : undefined);
       recordedChunksRef.current = [];
+      recordingCancelledRef.current = false;
 
       recorder.ondataavailable = (event) => {
         if (event.data.size > 0) recordedChunksRef.current.push(event.data);
@@ -744,6 +737,7 @@ export const ChatScreen: React.FC<ChatScreenProps> = ({
 
       recorder.onstop = async () => {
         try {
+          if (recordingCancelledRef.current) return;
           if (recordedChunksRef.current.length === 0) return;
           const resolvedType = recorder.mimeType || mimeType || 'audio/webm';
           const blob = new Blob(recordedChunksRef.current, { type: resolvedType });
@@ -758,10 +752,14 @@ export const ChatScreen: React.FC<ChatScreenProps> = ({
           await sendAttachmentsHandler([file], null);
         } finally {
           stream.getTracks().forEach((track) => track.stop());
+          recordingStreamRef.current = null;
+          setRecordingStream(null);
         }
       };
 
       recorderRef.current = recorder;
+      recordingStreamRef.current = stream;
+      setRecordingStream(stream);
       recorder.start();
       setRecording(true);
     } catch (err) {
@@ -771,10 +769,25 @@ export const ChatScreen: React.FC<ChatScreenProps> = ({
 
   const stopRecording = () => {
     if (recorderRef.current) {
+      recordingCancelledRef.current = false;
       recorderRef.current.stop();
       recorderRef.current = null;
       setRecording(false);
     }
+  };
+
+  const cancelRecording = () => {
+    if (recorderRef.current) {
+      recordingCancelledRef.current = true;
+      try {
+        recorderRef.current.stop();
+      } catch {
+        /* noop */
+      }
+      recorderRef.current = null;
+    }
+    recordedChunksRef.current = [];
+    setRecording(false);
   };
 
   const handleLogout = async () => {
@@ -1770,13 +1783,11 @@ export const ChatScreen: React.FC<ChatScreenProps> = ({
               )}
 
               {recording && (
-                <div className="recording-indicator">
-                  <span className="recording-dot" />
-                  Запись {Math.floor(recordingElapsed / 1000)}с
-                  <Button size="small" onClick={stopRecording}>
-                    Остановить
-                  </Button>
-                </div>
+                <RecordingBar
+                  stream={recordingStream}
+                  onCancel={cancelRecording}
+                  onSend={stopRecording}
+                />
               )}
 
               {replyTo && (
@@ -1821,7 +1832,10 @@ export const ChatScreen: React.FC<ChatScreenProps> = ({
                 </div>
               )}
 
-              <div className="composer-row">
+              <div
+                className="composer-row"
+                style={recording ? { display: 'none' } : undefined}
+              >
                 <input
                   ref={fileInputRef}
                   type="file"

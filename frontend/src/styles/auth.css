@@ -1,4 +1,28 @@
-/* Логотип */
+/* -----------------------------------------------------------
+   AUTH — animations only (layout preserved)
+   MOTION_INTENSITY 7, hardware-accelerated (transform/opacity)
+   ----------------------------------------------------------- */
+
+:root {
+  --auth-ease: cubic-bezier(0.16, 1, 0.3, 1);
+  --auth-accent-glow: rgba(135, 116, 225, 0.22);
+}
+
+/* Scene fade-in on mount */
+.auth-screen {
+  animation: authSceneIn 0.9s var(--auth-ease) both;
+}
+
+@keyframes authSceneIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+/* Logo — float + entry */
 .tg-logo-wrapper {
   width: auto;
   height: auto;
@@ -8,39 +32,161 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: all 0.5s ease;
+  transform-origin: center center;
+  animation:
+    authLogoIn 0.9s var(--auth-ease) 0.05s both,
+    authLogoFloat 5.2s ease-in-out 0.9s infinite;
+  will-change: transform;
+}
+
+@keyframes authLogoIn {
+  from {
+    opacity: 0;
+    transform: translateY(-10px) scale(0.92);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes authLogoFloat {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-4px);
+  }
 }
 
 .tg-logo {
   width: 152px;
-  height: 152 px;
+  height: 152px;
   object-fit: contain;
   filter: none;
+  transition: filter 0.45s var(--auth-ease);
 }
 
-/* Анимация логотипа при смене режима */
 .tg-logo-wrapper.register-mode {
-  filter: hue-rotate(40deg); /* Немного меняем цвет для регистрации */
+  filter: hue-rotate(40deg);
 }
 
-/* Обертка инпута */
+/* Form + fields — staggered entry */
+.auth-screen form,
+.auth-screen form + div {
+  animation: authBlockIn 0.7s var(--auth-ease) 0.2s both;
+}
+
+@keyframes authBlockIn {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
 .tg-input-group {
   margin-bottom: 20px;
+  opacity: 0;
+  transform: translateY(8px);
+  animation: authFieldIn 0.6s var(--auth-ease) forwards;
 }
 
+.tg-input-group:nth-of-type(1) {
+  animation-delay: 0.28s;
+}
+.tg-input-group:nth-of-type(2) {
+  animation-delay: 0.36s;
+}
+.tg-input-group:nth-of-type(3) {
+  animation-delay: 0.44s;
+}
+
+@keyframes authFieldIn {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Input wrapper — magnetic focus with tinted glow */
 .tg-custom-input-wrapper {
   background-color: var(--tg-input-bg);
   border: 1px solid var(--tg-border);
   border-radius: 12px;
   padding: 4px 16px;
-  transition: all 0.3s ease;
   display: flex;
   align-items: center;
+  position: relative;
+  transition:
+    border-color 0.35s var(--auth-ease),
+    background-color 0.35s var(--auth-ease),
+    transform 0.35s var(--auth-ease),
+    box-shadow 0.35s var(--auth-ease);
+  will-change: transform;
+}
+
+.tg-custom-input-wrapper::before {
+  content: '';
+  position: absolute;
+  inset: -1px;
+  border-radius: 13px;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.35s var(--auth-ease);
+  box-shadow: 0 0 0 4px var(--auth-accent-glow);
+}
+
+.tg-custom-input-wrapper:hover {
+  border-color: rgba(135, 116, 225, 0.55);
 }
 
 .tg-custom-input-wrapper:focus-within {
   border-color: var(--tg-accent);
+  background-color: rgba(135, 116, 225, 0.06);
+  transform: translateY(-1px);
   box-shadow: none;
+}
+
+.tg-custom-input-wrapper:focus-within::before {
+  opacity: 1;
+}
+
+/* Icon inside input — drift on focus */
+.tg-custom-input-wrapper > svg {
+  transition: color 0.35s var(--auth-ease), transform 0.35s var(--auth-ease);
+}
+
+.tg-custom-input-wrapper:focus-within > svg {
+  color: var(--tg-accent) !important;
+  transform: translateX(-1px);
+}
+
+/* Confirm-password reveal — smooth grid collapse */
+.auth-confirm-wrap {
+  display: grid;
+  grid-template-rows: 0fr;
+  opacity: 0;
+  transform: translateY(-4px);
+  transition:
+    grid-template-rows 0.45s var(--auth-ease),
+    opacity 0.35s var(--auth-ease),
+    transform 0.45s var(--auth-ease);
+  overflow: hidden;
+}
+
+.auth-confirm-wrap.is-open {
+  grid-template-rows: 1fr;
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.auth-confirm-wrap > * {
+  min-height: 0;
 }
 
 /* Кастомизация Ant Input и Password */
@@ -60,7 +206,7 @@
   color: var(--tg-accent) !important;
 }
 
-/* Ссылка переключения */
+/* Ссылка переключения — underline expand */
 .tg-link-btn {
   background: none;
   border: none;
@@ -69,10 +215,90 @@
   font-weight: 500;
   font-size: 14px;
   padding: 5px;
-  transition: opacity 0.2s;
+  position: relative;
+  transition: color 0.2s var(--auth-ease);
 }
+
+.tg-link-btn::after {
+  content: '';
+  position: absolute;
+  left: 5px;
+  right: 5px;
+  bottom: 2px;
+  height: 1px;
+  background: currentColor;
+  transform: scaleX(0);
+  transform-origin: left center;
+  transition: transform 0.35s var(--auth-ease);
+}
+
 .tg-link-btn:hover {
-  opacity: 0.8;
+  opacity: 1;
+  color: #a898ef;
+}
+
+.tg-link-btn:hover::after {
+  transform: scaleX(1);
+}
+
+.tg-link-btn:active {
+  transform: translateY(1px);
+}
+
+/* Primary submit button — tactile press + shine sweep */
+.auth-screen form .ant-btn-primary {
+  position: relative;
+  overflow: hidden;
+  transition:
+    transform 0.18s var(--auth-ease),
+    box-shadow 0.35s var(--auth-ease),
+    filter 0.35s var(--auth-ease) !important;
+  will-change: transform;
+}
+
+.auth-screen form .ant-btn-primary::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    110deg,
+    transparent 30%,
+    rgba(255, 255, 255, 0.22) 50%,
+    transparent 70%
+  );
+  transform: translateX(-110%);
+  transition: transform 0.85s var(--auth-ease);
+  pointer-events: none;
+}
+
+.auth-screen form .ant-btn-primary:hover {
+  filter: brightness(1.06);
+  box-shadow: 0 10px 28px rgba(135, 116, 225, 0.35) !important;
+}
+
+.auth-screen form .ant-btn-primary:hover::before {
+  transform: translateX(110%);
+}
+
+.auth-screen form .ant-btn-primary:active {
+  transform: translateY(1px) scale(0.985);
+}
+
+/* Reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  .auth-screen,
+  .tg-logo-wrapper,
+  .tg-input-group,
+  .auth-screen form,
+  .auth-screen form + div {
+    animation: none !important;
+    opacity: 1 !important;
+    transform: none !important;
+  }
+  .tg-custom-input-wrapper,
+  .auth-screen form .ant-btn-primary {
+    transition: none !important;
+  }
 }
 
 .app-loading {
