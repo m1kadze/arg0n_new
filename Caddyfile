@@ -1,0 +1,29 @@
+www.arg0n.ru {
+    redir https://arg0n.ru{uri} 308
+}
+
+arg0n.ru {
+    encode zstd gzip
+
+    # API + WebSocket (Caddy сам пробрасывает Upgrade-хедеры)
+    # Префикс /api срезается, т.к. бэкенд ожидает пути без него
+    handle_path /api/* {
+        reverse_proxy backend:8000
+    }
+
+    # Файлы, отдаваемые FastAPI (app.mount("/uploads", ...))
+    handle /uploads/* {
+        reverse_proxy backend:8000
+    }
+
+    # Всё остальное — SPA
+    handle {
+        reverse_proxy frontend:80
+    }
+
+    # Логи в stdout контейнера
+    log {
+        output stdout
+        format console
+    }
+}

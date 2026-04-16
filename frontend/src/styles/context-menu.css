@@ -1,0 +1,78 @@
+.context-menu {
+  position: fixed;
+  z-index: 10000;
+  background: #1f1f1f;
+  border: 1px solid var(--tg-border);
+  border-radius: 12px;
+  padding: 6px;
+  min-width: 180px;
+  box-shadow: none;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  opacity: 0;
+  transform: translateY(-4px) scale(0.96);
+  animation: context-menu-pop 140ms ease-out forwards;
+}
+
+@keyframes context-menu-pop {
+  0% {
+    opacity: 0;
+    transform: translateY(-6px) scale(0.92);
+  }
+  70% {
+    opacity: 1;
+    transform: translateY(0) scale(1.02);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.context-menu-reactions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  padding: 4px 6px 2px;
+}
+
+.context-menu-divider {
+  height: 1px;
+  background: var(--tg-border);
+  margin: 4px 6px;
+}
+
+.context-menu button {
+  border: none;
+  background: transparent;
+  color: var(--tg-text);
+  padding: 8px 10px;
+  text-align: left;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.context-menu button:hover {
+  background: #2b2b2b;
+}
+
+.context-menu .reaction-button {
+  border: 1px solid transparent;
+  background: #2b2b2b;
+  color: var(--tg-text);
+  border-radius: 8px;
+  font-size: 16px;
+  padding: 4px 6px;
+  cursor: pointer;
+  line-height: 1;
+}
+
+.context-menu .reaction-button.active {
+  border-color: var(--tg-accent);
+  color: var(--tg-accent);
+}
+
+.context-menu .danger {
+  color: #ff9f9f;
+}

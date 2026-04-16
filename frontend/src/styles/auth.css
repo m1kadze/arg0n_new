@@ -1,0 +1,91 @@
+/* Логотип */
+.tg-logo-wrapper {
+  width: auto;
+  height: auto;
+  margin: 0 auto 30px;
+  border-radius: 0;
+  background: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.5s ease;
+}
+
+.tg-logo {
+  width: 152px;
+  height: 152 px;
+  object-fit: contain;
+  filter: none;
+}
+
+/* Анимация логотипа при смене режима */
+.tg-logo-wrapper.register-mode {
+  filter: hue-rotate(40deg); /* Немного меняем цвет для регистрации */
+}
+
+/* Обертка инпута */
+.tg-input-group {
+  margin-bottom: 20px;
+}
+
+.tg-custom-input-wrapper {
+  background-color: var(--tg-input-bg);
+  border: 1px solid var(--tg-border);
+  border-radius: 12px;
+  padding: 4px 16px;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+}
+
+.tg-custom-input-wrapper:focus-within {
+  border-color: var(--tg-accent);
+  box-shadow: none;
+}
+
+/* Кастомизация Ant Input и Password */
+.tg-custom-input.ant-input,
+.tg-custom-input .ant-input,
+.tg-custom-input.ant-input-password .ant-input {
+  background-color: transparent !important;
+  color: white !important;
+  font-size: 16px !important;
+}
+
+/* Иконки в инпутах */
+.ant-input-password-icon {
+  color: var(--tg-hint) !important;
+}
+.ant-input-password-icon:hover {
+  color: var(--tg-accent) !important;
+}
+
+/* Ссылка переключения */
+.tg-link-btn {
+  background: none;
+  border: none;
+  color: var(--tg-accent);
+  cursor: pointer;
+  font-weight: 500;
+  font-size: 14px;
+  padding: 5px;
+  transition: opacity 0.2s;
+}
+.tg-link-btn:hover {
+  opacity: 0.8;
+}
+
+.app-loading {
+  min-height: 100vh;
+  display: grid;
+  place-items: center;
+}
+
+.auth-screen {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}

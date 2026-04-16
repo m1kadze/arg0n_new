@@ -1,0 +1,249 @@
+.chat-profile {
+  border-left: 1px solid var(--tg-border);
+  background: #1b1b1b;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  overflow-y: auto;
+  animation: slide-in-right 220ms cubic-bezier(0.16, 1, 0.3, 1);
+  transition: transform 220ms cubic-bezier(0.16, 1, 0.3, 1), opacity 220ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes slide-in-right {
+  0% {
+    opacity: 0;
+    transform: translateX(32px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+.profile-header {
+  padding: 20px;
+  text-align: center;
+  border-bottom: 1px solid var(--tg-border);
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  align-items: center;
+}
+
+.profile-name {
+  font-weight: 600;
+  font-size: 16px;
+}
+
+.profile-username {
+  font-size: 12px;
+  color: var(--tg-hint);
+}
+
+.profile-status {
+  font-size: 12px;
+  color: var(--tg-hint);
+}
+
+.profile-about {
+  font-size: 12px;
+  color: var(--tg-text);
+  opacity: 0.9;
+}
+
+.profile-actions {
+  padding: 12px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  border-bottom: 1px solid var(--tg-border);
+}
+
+.profile-action {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 10px;
+  border-radius: 10px;
+  background: #242424;
+  border: 1px solid var(--tg-border);
+  color: var(--tg-text);
+  cursor: pointer;
+}
+
+.profile-action.danger {
+  color: #ffb2ae;
+  border-color: rgba(255, 94, 87, 0.4);
+}
+
+.profile-media-tabs {
+  padding: 12px 16px;
+  display: grid;
+  gap: 8px;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.profile-media-tabs button {
+  border: 1px solid var(--tg-border);
+  background: #242424;
+  color: var(--tg-text);
+  padding: 6px 8px;
+  border-radius: 10px;
+  font-size: 11px;
+  cursor: pointer;
+}
+
+.profile-media-tabs button.active {
+  border-color: var(--tg-accent);
+  color: var(--tg-accent);
+}
+
+.profile-media-content {
+  padding: 0 16px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.media-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.media-thumb {
+  border: none;
+  background: none;
+  padding: 0;
+  cursor: pointer;
+}
+
+.media-thumb img {
+  width: 100%;
+  height: 120px;
+  object-fit: cover;
+  border-radius: 12px;
+}
+
+.media-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.media-row {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  border: 1px solid var(--tg-border);
+  background: #242424;
+  color: var(--tg-text);
+  padding: 8px 10px;
+  border-radius: 10px;
+  cursor: pointer;
+}
+
+.media-empty {
+  color: var(--tg-hint);
+  font-size: 12px;
+  padding: 10px;
+}
+
+.profile-empty {
+  flex: 1;
+  display: grid;
+  place-items: center;
+  color: var(--tg-hint);
+  font-size: 12px;
+}
+
+.profile-modal {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.profile-modal-avatar {
+  display: flex;
+  gap: 16px;
+  align-items: center;
+}
+
+.profile-modal-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.profile-modal-fields {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.profile-modal-fields label {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  font-size: 12px;
+  color: var(--tg-hint);
+}
+
+.profile-modal-actions-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-top: 12px;
+}
+
+.profile-modal-actions-save {
+  display: inline-flex;
+  gap: 8px;
+}
+
+.forward-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  max-height: 320px;
+  overflow-y: auto;
+}
+
+.forward-item {
+  border: 1px solid var(--tg-border);
+  background: #1f1f1f;
+  color: var(--tg-text);
+  border-radius: 12px;
+  padding: 8px 10px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  cursor: pointer;
+  text-align: left;
+}
+
+.forward-item.active {
+  border-color: var(--tg-accent);
+  color: var(--tg-accent);
+}
+
+.forward-item:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+.forward-name {
+  font-size: 13px;
+  flex: 1;
+}
+
+.forward-tag {
+  font-size: 10px;
+  color: var(--tg-hint);
+}
+
+.forward-empty {
+  font-size: 12px;
+  color: var(--tg-hint);
+}

@@ -1,0 +1,11 @@
+fastapi>=0.110
+uvicorn[standard]>=0.27
+sqlalchemy>=2.0
+aiosqlite>=0.19
+passlib>=1.7
+python-jose[cryptography]>=3.3
+python-multipart>=0.0.9
+redis>=5.0
+httpx>=0.26
+pydantic-settings>=2.2
+rapidfuzz>=3.6

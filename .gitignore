@@ -1,0 +1,38 @@
+# secrets
+.env
+.env.*
+!.env.example
+
+# python
+__pycache__/
+*.py[cod]
+*$py.class
+.venv/
+venv/
+env/
+
+# sqlite / runtime data
+*.db
+*.db-journal
+backend/storage/
+backend/app.db
+backups/
+
+# node
+node_modules/
+dist/
+.vite/
+*.log
+npm-debug.log*
+
+# editors / os
+.idea/
+.vscode/
+.DS_Store
+Thumbs.db
+~$*
+
+# archives left in repo
+*.7z
+*.zip
+*.tar.gz

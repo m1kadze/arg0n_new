@@ -1,0 +1,53 @@
+html,
+body,
+#root {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  background-color: var(--tg-bg);
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  color: var(--tg-text);
+  overflow: hidden;
+}
+
+#root {
+  overflow: hidden;
+  width: 100%;
+}
+
+.ant-app {
+  height: 100%;
+  min-height: 100%;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.ant-btn,
+.ant-btn:focus,
+.ant-btn:active,
+.ant-btn:hover {
+  box-shadow: none !important;
+}
+
+/* Center AntD message popups (message.success/error) */
+.ant-message {
+  left: 0 !important;
+  right: 0 !important;
+  transform: none !important;
+  width: 100% !important;
+  max-width: none !important;
+  display: grid !important;
+  place-items: center !important;
+  text-align: center;
+}
+.ant-message-notice {
+  margin: 0 !important;
+  width: auto !important;
+}
+.ant-message-notice-content {
+  text-align: center;
+}

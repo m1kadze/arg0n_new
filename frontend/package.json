@@ -1,0 +1,38 @@
+{
+  "name": "messenger",
+  "private": true,
+  "version": "0.0.1",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc -b && vite build",
+    "lint": "eslint .",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "@ant-design/icons": "^6.1.1",
+    "@tanstack/react-virtual": "^3.13.23",
+    "antd": "^6.3.5",
+    "emoji-data": "^0.2.0",
+    "lucide-react": "^1.8.0",
+    "nanoid": "^5.1.9",
+    "react": "^19.2.5",
+    "react-dom": "^19.2.5",
+    "sass": "^1.99.0",
+    "twemoji-parser": "^14.0.0"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.39.2",
+    "@types/node": "^25.6.0",
+    "@types/react": "^19.2.14",
+    "@types/react-dom": "^19.2.3",
+    "@vitejs/plugin-react-swc": "^4.3.0",
+    "eslint": "^9.39.2",
+    "eslint-plugin-react-hooks": "^7.0.1",
+    "eslint-plugin-react-refresh": "^0.5.2",
+    "globals": "^17.5.0",
+    "typescript": "~6.0.2",
+    "typescript-eslint": "^8.58.2",
+    "vite": "^8.0.8"
+  }
+}

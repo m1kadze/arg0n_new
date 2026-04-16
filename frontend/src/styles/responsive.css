@@ -1,0 +1,17 @@
+@media (max-width: 900px) {
+  .chat-app {
+    grid-template-columns: 1fr;
+  }
+
+  .chat-sidebar {
+    min-height: auto;
+  }
+
+  .chat-profile {
+    display: none;
+  }
+
+  .emoji-grid {
+    grid-template-columns: repeat(6, minmax(0, 1fr));
+  }
+}
