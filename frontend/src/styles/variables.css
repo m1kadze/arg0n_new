@@ -1,45 +1,9 @@
 :root {
-  /* Telegram Web — Classic Dark, calibrated */
   --tg-bg: #212121;
-  --tg-bg-main: #0f0f0f;
-  --tg-bg-sidebar: #1a1a1a;
-  --tg-bg-header: #202020;
-  --tg-bg-elev-1: #232323;
-  --tg-bg-elev-2: #2a2a2a;
-  --tg-bg-hover: #2b2b2b;
-  --tg-bg-active: #8774e1;
-
   --tg-accent: #8774e1;
-  --tg-accent-hover: #9d8ceb;
-  --tg-accent-soft: rgba(135, 116, 225, 0.18);
-  --tg-accent-ring: rgba(135, 116, 225, 0.35);
-
-  --tg-bubble-in: #1e1e1e;
-  --tg-bubble-out: #766ac8;
-  --tg-bubble-out-meta: rgba(255, 255, 255, 0.72);
-
   --tg-text: #ffffff;
-  --tg-text-soft: #e5e5e5;
-  --tg-hint: #8a8a8a;
-  --tg-hint-soft: #6a6a6a;
-
-  --tg-border: #2a2a2a;
-  --tg-border-soft: rgba(255, 255, 255, 0.06);
-  --tg-divider: rgba(255, 255, 255, 0.05);
-
+  --tg-hint: #707579;
+  --tg-input-bg: #0f0f0f;
+  --tg-border: #2f2f2f;
   --tg-error: #ff5e57;
-  --tg-online: #3ddc84;
-
-  --tg-radius-sm: 8px;
-  --tg-radius-md: 12px;
-  --tg-radius-lg: 18px;
-  --tg-radius-bubble: 14px;
-  --tg-radius-pill: 999px;
-
-  --tg-shadow-float: 0 12px 32px -12px rgba(0, 0, 0, 0.55);
-  --tg-shadow-bubble: 0 1px 1px rgba(0, 0, 0, 0.25);
-
-  --tg-ease: cubic-bezier(0.16, 1, 0.3, 1);
-  --tg-sidebar-w: 26rem;
-  --tg-profile-w: 22rem;
 }

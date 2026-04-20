@@ -1,167 +1,113 @@
 .chat-sidebar {
-  background: var(--tg-bg-sidebar);
+  background-color: #1b1b1b;
   border-right: 1px solid var(--tg-border);
   display: flex;
   flex-direction: column;
   min-height: 0;
   overflow: hidden;
-  position: relative;
 }
 
 .sidebar-topbar {
   display: flex;
   align-items: center;
+  justify-content: space-between;
   gap: 12px;
-  padding: 10px 14px;
-  height: 56px;
-  background: var(--tg-bg-sidebar);
-  border-bottom: 1px solid var(--tg-border-soft);
-  position: sticky;
-  top: 0;
-  z-index: 2;
+  padding: 12px 16px 8px;
+  border-bottom: 1px solid var(--tg-border);
 }
 
 .sidebar-burger {
-  height: 40px !important;
-  width: 40px !important;
-  padding: 0 !important;
-  color: var(--tg-text-soft) !important;
-  border-radius: 50% !important;
-  display: inline-flex !important;
-  align-items: center;
-  justify-content: center;
-  transition: background 160ms var(--tg-ease);
-}
-.sidebar-burger:hover {
-  background: var(--tg-bg-hover) !important;
-  color: #fff !important;
+  height: 32px;
+  width: 32px;
+  padding: 0;
+  color: #e6e6e6;
 }
 
 .sidebar-title {
-  font-size: 18px;
-  font-weight: 600;
-  color: var(--tg-text);
-  letter-spacing: -0.01em;
-  text-transform: none;
-  flex: 1;
-  min-width: 0;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
+  font-size: 13px;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: #8f8f8f;
 }
 
 .sidebar-user {
   display: flex;
   align-items: center;
   gap: 12px;
-  padding: 14px 16px;
-  border-bottom: 1px solid var(--tg-border-soft);
+  padding: 16px;
+  border-bottom: 1px solid var(--tg-border);
 }
 
 .sidebar-user-info {
   display: flex;
   flex-direction: column;
-  gap: 2px;
+  gap: 4px;
   flex: 1;
   min-width: 0;
 }
 
 .sidebar-user-name {
   font-weight: 600;
-  font-size: 15px;
-  color: var(--tg-text);
+  font-size: 14px;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
 }
 
-.sidebar-user-sub {
-  font-size: 13px;
-  color: var(--tg-hint);
-}
-
-/* Drawer (slide-in menu) */
-.sidebar-drawer .ant-drawer-content-wrapper {
-  box-shadow: 8px 0 40px -12px rgba(0, 0, 0, 0.6) !important;
-}
 .sidebar-drawer .ant-drawer-body {
-  background: var(--tg-bg-sidebar);
-  color: var(--tg-text);
-  padding: 20px 16px;
-}
-.sidebar-drawer .ant-drawer-header {
-  background: var(--tg-bg-sidebar);
-  border-bottom: 1px solid var(--tg-border-soft);
-}
-.sidebar-drawer .ant-drawer-title,
-.sidebar-drawer .ant-drawer-close {
-  color: var(--tg-text) !important;
+  background: #1b1b1b;
+  color: #e6e6e6;
 }
 
 .drawer-user {
   display: flex;
   align-items: center;
-  gap: 14px;
-  padding: 4px 0 18px;
-  border-bottom: 1px solid var(--tg-border-soft);
+  gap: 12px;
+  padding: 8px 0 16px;
+  border-bottom: 1px solid var(--tg-border);
   cursor: pointer;
-  transition: opacity 160ms var(--tg-ease);
 }
-.drawer-user:hover { opacity: 0.85; }
 
 .drawer-user-info {
   display: flex;
   flex-direction: column;
-  gap: 2px;
-  min-width: 0;
+  gap: 4px;
 }
 
 .drawer-user-name {
   font-weight: 600;
-  font-size: 16px;
-  color: var(--tg-text);
-  letter-spacing: -0.01em;
+  font-size: 15px;
+  color: #f0f0f0;
 }
 
 .drawer-user-sub {
-  font-size: 13px;
-  color: var(--tg-hint);
+  font-size: 12px;
+  color: #9a9a9a;
 }
 
 .drawer-actions {
   display: flex;
   flex-direction: column;
-  gap: 2px;
-  padding-top: 10px;
+  gap: 8px;
+  padding-top: 16px;
 }
 
 .drawer-actions .ant-btn {
-  height: 44px;
-  background: transparent !important;
-  border: none !important;
-  color: var(--tg-text-soft) !important;
-  text-align: left;
-  display: flex;
-  align-items: center;
-  justify-content: flex-start;
-  gap: 14px;
-  padding: 0 12px !important;
-  border-radius: 10px !important;
-  font-weight: 500;
-  font-size: 14px;
-  transition: background 160ms var(--tg-ease);
+  height: 36px;
+  background: #232323;
+  border: 1px solid #2f2f2f;
+  color: #e7e7e7;
 }
 
 .drawer-actions .ant-btn:hover {
-  background: var(--tg-bg-hover) !important;
-  color: var(--tg-text) !important;
+  border-color: #3a3a3a;
+  color: #ffffff;
 }
 
-/* Create chat modal */
 .create-chat-modal {
   display: flex;
   flex-direction: column;
-  gap: 14px;
+  gap: 12px;
 }
 
 .create-chat-modal label {
@@ -169,37 +115,34 @@
   flex-direction: column;
   gap: 6px;
   font-size: 12px;
-  color: var(--tg-hint);
-  text-transform: uppercase;
-  letter-spacing: 0.06em;
-  font-weight: 600;
+  color: #c9c9c9;
 }
 
 .create-chat-hint {
   font-size: 12px;
-  color: var(--tg-hint);
+  color: #8b8b8b;
 }
 
 .create-chat-members {
   display: flex;
   flex-wrap: wrap;
-  gap: 6px;
+  gap: 8px;
 }
 
 .create-chat-member {
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  background: var(--tg-accent-soft);
-  border: 1px solid transparent;
-  color: var(--tg-text);
-  padding: 4px 10px;
-  border-radius: var(--tg-radius-pill);
+  background: #272727;
+  border: 1px solid #333333;
+  color: #e3e3e3;
+  padding: 4px 8px;
+  border-radius: 999px;
   font-size: 12px;
-  transition: background 160ms var(--tg-ease);
 }
+
 .create-chat-member:hover {
-  background: rgba(135, 116, 225, 0.28);
+  border-color: #424242;
 }
 
 .create-chat-member-name {
@@ -212,10 +155,9 @@
 .create-chat-results {
   display: flex;
   flex-direction: column;
-  gap: 2px;
-  max-height: 220px;
+  gap: 6px;
+  max-height: 200px;
   overflow-y: auto;
-  padding-right: 4px;
 }
 
 .create-chat-result {
@@ -223,21 +165,24 @@
   justify-content: space-between;
   align-items: center;
   gap: 12px;
-  padding: 10px 12px;
-  border-radius: 10px;
-  background: transparent;
-  border: none;
-  color: var(--tg-text);
+  padding: 8px 10px;
+  border-radius: 8px;
+  background: #202020;
+  border: 1px solid #2b2b2b;
+  color: #e6e6e6;
   text-align: left;
-  cursor: pointer;
-  transition: background 140ms var(--tg-ease);
 }
 
 .create-chat-result:hover {
-  background: var(--tg-bg-hover);
+  border-color: #3c3c3c;
 }
 
 .create-chat-result-username {
+  font-size: 12px;
+  color: #9c9c9c;
+}
+
+.sidebar-user-sub {
   font-size: 12px;
   color: var(--tg-hint);
 }

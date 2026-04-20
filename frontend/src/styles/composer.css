@@ -1,77 +1,71 @@
 .chat-composer {
-  padding: 10px 16px 14px;
-  background: transparent;
+  padding: 12px 16px;
+  border-top: 1px solid var(--tg-border);
+  background: #1a1a1a;
   display: flex;
   flex-direction: column;
   gap: 8px;
-  margin: 0;
-  flex-shrink: 0;
-  position: relative;
+  border-radius: 16px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.28);
+  margin: 10px 16px 4px;
 }
 
 .blocked-banner {
   display: flex;
   align-items: center;
   gap: 8px;
-  padding: 10px 14px;
-  border-radius: var(--tg-radius-md);
+  padding: 8px 10px;
+  border-radius: 10px;
   background: rgba(255, 94, 87, 0.14);
   color: #ffb2ae;
-  font-size: 13px;
+  font-size: 12px;
 }
 
 .composer-row {
   display: flex;
-  gap: 8px;
-  align-items: flex-end;
+  gap: 10px;
+  align-items: center;
 }
 
 .composer-row .ant-btn {
-  height: 48px !important;
-  width: 48px !important;
-  min-width: 48px !important;
-  padding: 0 !important;
-  display: inline-flex !important;
+  height: 44px;
+  min-width: 44px;
+  padding: 0 12px;
+  display: inline-flex;
   align-items: center;
   justify-content: center;
-  border-radius: 50% !important;
-  background: var(--tg-bg-header) !important;
-  border: 1px solid var(--tg-border-soft) !important;
-  color: var(--tg-text-soft) !important;
-  box-shadow: var(--tg-shadow-float);
-  transition: background 160ms var(--tg-ease), transform 160ms var(--tg-ease);
+  border-radius: 50%;
+  background: #2b2b2b;
+  border-color: #2b2b2b;
 }
-.composer-row .ant-btn:not(.composer-send-btn):hover {
-  background: var(--tg-bg-hover) !important;
-  color: #fff !important;
+
+.composer-row .ant-btn:not(.composer-send-btn) {
+  color: var(--tg-text);
 }
-.composer-row .ant-btn:active { transform: translateY(1px); }
 
 .composer-row .ant-btn svg {
-  width: 20px;
-  height: 20px;
+  width: 18px;
+  height: 18px;
 }
 
 .composer-send-btn {
   background: var(--tg-accent) !important;
   border-color: var(--tg-accent) !important;
-  box-shadow: 0 6px 18px var(--tg-accent-ring);
-  color: #fff !important;
-}
-.composer-send-btn:hover {
-  background: var(--tg-accent-hover) !important;
-  border-color: var(--tg-accent-hover) !important;
+  box-shadow: 0 6px 18px rgba(135, 116, 225, 0.35);
+  color: #fff;
+  padding: 0;
+  min-width: 44px;
 }
 
 .composer-send-btn .send-toggle {
-  width: 22px;
-  height: 22px;
+  width: 20px;
+  height: 20px;
 }
 
 .send-toggle {
   position: relative;
-  width: 20px;
-  height: 20px;
+  width: 18px;
+  height: 18px;
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -84,22 +78,22 @@
   left: 50%;
   transform: translate(-50%, -50%) scale(0.9);
   opacity: 0;
-  transition:
-    opacity 220ms var(--tg-ease),
-    transform 220ms var(--tg-ease),
-    rotate 220ms var(--tg-ease);
+  transition: opacity 220ms cubic-bezier(0.16, 1, 0.3, 1),
+    transform 220ms cubic-bezier(0.16, 1, 0.3, 1),
+    rotate 220ms cubic-bezier(0.16, 1, 0.3, 1);
   will-change: opacity, transform;
 }
 
 .send-toggle__icon.send-toggle__send {
-  width: 20px;
-  height: 20px;
+  width: 18px;
+  height: 18px;
 }
 
 .send-toggle--send .send-toggle__send {
   opacity: 1;
   transform: translate(-50%, -50%) scale(1) rotate(0deg);
 }
+
 .send-toggle--send .send-toggle__mic {
   opacity: 0;
   transform: translate(-50%, -50%) scale(0.8) rotate(-8deg);
@@ -109,88 +103,82 @@
   opacity: 1;
   transform: translate(-50%, -50%) scale(1) rotate(0deg);
 }
+
 .send-toggle--mic .send-toggle__send {
   opacity: 0;
   transform: translate(-50%, -50%) scale(0.8) rotate(8deg);
 }
 
-.send-toggle--recording .send-toggle__mic { color: #ff5e57; }
+.send-toggle--recording .send-toggle__mic {
+  color: #ff5e57;
+}
 
-/* Input pill — Telegram composer */
+.composer-input .ant-input {
+  background: #141414;
+  border-color: var(--tg-border);
+  color: var(--tg-text);
+}
+
 .visual-input {
   position: relative;
-  background: var(--tg-bg-header);
-  border: 1px solid var(--tg-border-soft);
-  border-radius: 22px;
-  min-height: 48px;
-  max-height: 220px;
+  border: 1px solid var(--tg-border);
+  background: #141414;
+  border-radius: 26px;
+  min-height: 44px;
   padding: 0;
   display: flex;
   align-items: center;
   flex: 1;
-  overflow: hidden auto;
-  box-shadow: var(--tg-shadow-float);
-  transition: border-color 160ms var(--tg-ease), background 160ms var(--tg-ease);
-}
-.visual-input:focus-within {
-  border-color: var(--tg-accent);
-  background: var(--tg-bg-elev-1);
 }
 
 .composer-visual-layer {
   position: absolute;
   inset: 0;
-  padding: 12px 16px;
+  padding: 10px 12px;
   pointer-events: none;
   color: var(--tg-text);
-  font-size: 15px;
+  font-size: 16px;
   line-height: 1.4;
   white-space: pre-wrap;
   word-break: break-word;
   overflow: hidden;
 }
 
-.composer-placeholder { color: var(--tg-hint); }
+.composer-placeholder {
+  color: var(--tg-hint);
+}
 
 .composer-editable {
   position: relative;
   width: 100%;
-  min-height: 24px;
+  min-height: 30px;
   outline: none;
   border: none;
   background: transparent;
   color: var(--tg-text);
-  caret-color: var(--tg-accent);
-  font-size: 15px;
+  caret-color: var(--tg-text);
+  font-size: 16px;
   line-height: 1.4;
   white-space: pre-wrap;
   word-break: break-word;
-  padding: 12px 16px;
-}
-
-.composer-input .ant-input {
-  background: var(--tg-bg-header) !important;
-  border-color: var(--tg-border-soft) !important;
-  color: var(--tg-text) !important;
-  border-radius: 22px !important;
+  padding: 10px 12px;
 }
 
 .attachment-list {
   display: flex;
   flex-wrap: wrap;
-  gap: 6px;
+  gap: 8px;
 }
 
 .attachment-pill {
-  background: var(--tg-bg-elev-1);
-  border-radius: var(--tg-radius-pill);
-  padding: 4px 12px;
+  background: #242424;
+  border-radius: 12px;
+  padding: 4px 8px;
   font-size: 12px;
   color: var(--tg-text);
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  border: 1px solid var(--tg-border-soft);
 }
 
 .preview-grid {
@@ -205,8 +193,7 @@
   height: 90px;
   border-radius: 12px;
   overflow: hidden;
-  background: var(--tg-bg-elev-1);
-  border: 1px solid var(--tg-border-soft);
+  background: #242424;
 }
 
 .preview-item img {
@@ -216,8 +203,8 @@
 }
 
 .preview-file {
-  padding: 10px;
-  font-size: 11.5px;
+  padding: 8px;
+  font-size: 11px;
   color: var(--tg-text);
 }
 
@@ -226,58 +213,50 @@
   top: 6px;
   right: 6px;
   border: none;
-  background: rgba(0, 0, 0, 0.65);
+  background: rgba(0, 0, 0, 0.6);
   color: #fff;
-  border-radius: var(--tg-radius-pill);
-  width: 22px;
-  height: 22px;
+  border-radius: 999px;
+  width: 20px;
+  height: 20px;
   display: inline-flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  backdrop-filter: blur(4px);
-  transition: background 160ms var(--tg-ease);
 }
-.preview-remove:hover { background: var(--tg-error); }
 
 .reply-preview {
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 10px;
-  padding: 8px 10px 8px 12px;
-  border-radius: var(--tg-radius-md);
+  padding: 8px 10px;
+  border-radius: 12px;
   border-left: 3px solid var(--tg-accent);
-  background: var(--tg-bg-header);
-  border-top: 1px solid var(--tg-border-soft);
-  border-right: 1px solid var(--tg-border-soft);
-  border-bottom: 1px solid var(--tg-border-soft);
+  background: #242424;
 }
 
 .reply-preview-body {
   display: flex;
   flex-direction: column;
-  gap: 1px;
+  gap: 2px;
   min-width: 0;
-  flex: 1;
 }
 
 .reply-preview-label {
-  font-size: 10.5px;
+  font-size: 10px;
   text-transform: uppercase;
-  color: var(--tg-accent);
-  letter-spacing: 0.05em;
-  font-weight: 600;
+  color: var(--tg-hint);
+  letter-spacing: 0.03em;
 }
 
 .reply-preview-name {
-  font-size: 12.5px;
+  font-size: 12px;
   color: var(--tg-accent);
   font-weight: 600;
 }
 
 .reply-preview-text {
-  font-size: 12.5px;
+  font-size: 12px;
   color: var(--tg-text);
   opacity: 0.8;
   white-space: nowrap;
@@ -287,19 +266,13 @@
 
 .reply-preview-close {
   border: none;
-  background: transparent;
-  color: var(--tg-hint);
-  border-radius: 50%;
-  width: 28px;
-  height: 28px;
+  background: rgba(0, 0, 0, 0.5);
+  color: #fff;
+  border-radius: 999px;
+  width: 22px;
+  height: 22px;
   display: inline-flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  transition: background 160ms var(--tg-ease), color 160ms var(--tg-ease);
-  flex-shrink: 0;
-}
-.reply-preview-close:hover {
-  background: var(--tg-bg-hover);
-  color: #fff;
 }
