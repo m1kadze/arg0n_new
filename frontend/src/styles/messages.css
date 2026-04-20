@@ -127,16 +127,24 @@
 .message-meta {
   font-size: 11px;
   color: var(--tg-hint);
-  margin-top: 6px;
   display: flex;
   gap: 6px;
   align-items: center;
   justify-content: flex-end;
   text-align: right;
   position: absolute;
-  right: 12px;
-  bottom: 8px;
-  margin-top: 0;
+  right: 8px;
+  bottom: 4px;
+  line-height: 1;
+  padding: 2px 5px;
+  border-radius: 8px;
+  background: rgba(0, 0, 0, 0.14);
+  backdrop-filter: blur(2px);
+}
+
+.message.self .message-meta {
+  background: rgba(0, 0, 0, 0.22);
+  color: #dcd6ff;
 }
 
 .meta-edited {

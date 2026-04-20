@@ -3,12 +3,15 @@ import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { App as AntdApp, Button, Drawer, Input, Modal, Spin } from 'antd';
 import {
   Ban,
+  BadgeCheck,
+  Bookmark,
   Check,
   CheckCheck,
   ChevronLeft,
   ChevronRight,
   Image as ImageIcon,
   Eye,
+  Edit3,
   LogOut,
   Menu,
   Mic,
@@ -18,7 +21,9 @@ import {
   PhoneOff,
   Search,
   Smile,
+  Sparkles,
   Trash2,
+  Users,
   Video,
   X,
 } from 'lucide-react';
@@ -1286,7 +1291,7 @@ export const ChatScreen: React.FC<ChatScreenProps> = ({
   return (
     <div className={`chat-app${sidebarVisible ? '' : ' chat-app--sidebar-hidden'}`}>
       <aside className="chat-sidebar">
-        <div className="sidebar-topbar">
+        <div className="sidebar-search-row">
           <Button
             type="text"
             className="sidebar-burger"
@@ -1294,20 +1299,38 @@ export const ChatScreen: React.FC<ChatScreenProps> = ({
             onClick={() => setMenuOpen(true)}
             aria-label="Меню"
           />
-          <div className="sidebar-title">Чаты</div>
+          <div className="chat-search">
+            <Input
+              value={searchQuery}
+              onChange={(event) => setSearchQuery(event.target.value)}
+              placeholder="Поиск"
+              prefix={<Search size={16} color="#707579" />}
+              allowClear
+            />
+          </div>
         </div>
 
-        <div className="chat-search">
-          <Input
-            value={searchQuery}
-            onChange={(event) => setSearchQuery(event.target.value)}
-            placeholder="Поиск пользователей"
-            prefix={<Search size={16} color="#707579" />}
-            allowClear
-          />
-        </div>
+        <div className="sidebar-columns">
+          <nav className="sidebar-rail" aria-label="Папки">
+            <button className="rail-tab active" type="button">
+              <Sparkles size={20} strokeWidth={1.8} />
+              <span className="rail-tab-label">Все чаты</span>
+            </button>
+            <button className="rail-tab" type="button">
+              <Users size={20} strokeWidth={1.8} />
+              <span className="rail-tab-label">Личные</span>
+            </button>
+            <button className="rail-tab" type="button">
+              <Bookmark size={20} strokeWidth={1.8} />
+              <span className="rail-tab-label">Новые</span>
+            </button>
+            <button className="rail-tab" type="button">
+              <Edit3 size={20} strokeWidth={1.8} />
+              <span className="rail-tab-label">Ред.</span>
+            </button>
+          </nav>
 
-        <div className="chat-list">
+          <div className="chat-list">
           {searchResults.length > 0 && (
             <div className="chat-item-sub">Результаты поиска</div>
           )}
@@ -1347,22 +1370,28 @@ export const ChatScreen: React.FC<ChatScreenProps> = ({
                   ? blockedUserIds.includes(chat.participant.id)
                   : false;
               const chatTitle = getChatTitle(chat);
-              const chatSubtitle = getChatSubtitle(chat);
+              const isFavorites = chat.chat_type === 'favorites';
               return (
                 <div
                   key={chat.id}
                   className={`chat-item ${chat.id === selectedChatId ? 'active' : ''} ${
                     isChatBlocked ? 'blocked' : ''
-                  }`}
+                  } ${isFavorites ? 'favorites' : ''}`}
                   onClick={() => handleSelectChat(chat.id)}
                   onContextMenu={(event) => handleChatContext(event, chat)}
                 >
                   <div className="avatar-wrapper">
                     <div
                       className="avatar-circle"
-                      style={{ background: getAvatarColor(getChatAvatarSeed(chat)) }}
+                      style={
+                        isFavorites
+                          ? { background: 'var(--tg-accent, #8774e1)' }
+                          : { background: getAvatarColor(getChatAvatarSeed(chat)) }
+                      }
                     >
-                      {isDirect && chat.participant?.avatar_url ? (
+                      {isFavorites ? (
+                        <Bookmark size={22} strokeWidth={2} fill="#ffffff" color="#ffffff" />
+                      ) : isDirect && chat.participant?.avatar_url ? (
                         <img
                           src={resolveAvatarUrl(chat.participant.avatar_url)}
                           alt="avatar"
@@ -1381,19 +1410,28 @@ export const ChatScreen: React.FC<ChatScreenProps> = ({
                   </div>
                   <div className="chat-item-body">
                     <div className="chat-item-row">
-                      <div className="chat-item-title">{chatTitle}</div>
+                      <div className="chat-item-title">
+                        {chatTitle}
+                        {isFavorites && (
+                          <BadgeCheck
+                            size={14}
+                            className="chat-verified-icon"
+                            fill="var(--tg-accent, #8774e1)"
+                            color="#ffffff"
+                          />
+                        )}
+                      </div>
                       {chat.unread_count > 0 && (
                         <span className="chat-unread-badge">
                           {chat.unread_count}
                         </span>
                       )}
                     </div>
-                    <div className="chat-item-sub">{renderChatPreview(chat.last_message)}</div>
                     <div className="chat-item-sub">
                       {isChatBlocked ? (
                         <span className="blocked-tag">Заблокирован</span>
                       ) : (
-                        chatSubtitle
+                        renderChatPreview(chat.last_message)
                       )}
                     </div>
                   </div>
@@ -1402,6 +1440,7 @@ export const ChatScreen: React.FC<ChatScreenProps> = ({
               );
             })
           )}
+          </div>
         </div>
       </aside>
 
@@ -1412,6 +1451,14 @@ export const ChatScreen: React.FC<ChatScreenProps> = ({
               <div>
                 <div className="chat-header-title">
                   {selectedProfile?.displayName || getChatTitle(selectedChat)}
+                  {selectedChat.chat_type === 'favorites' && (
+                    <BadgeCheck
+                      size={16}
+                      className="chat-verified-icon"
+                      fill="var(--tg-accent, #8774e1)"
+                      color="#ffffff"
+                    />
+                  )}
                 </div>
                 <div className="chat-header-status">
                   {isDirectChat(selectedChat) && selectedChat.participant ? (
@@ -1439,20 +1486,24 @@ export const ChatScreen: React.FC<ChatScreenProps> = ({
               </div>
 
             <div className="header-actions">
-              <Button
-                type="text"
-                onClick={() => selectedChat && startCall('voice', selectedChat.id, selectedChat.chat_type)}
-                icon={<Phone size={18} />}
-                title="Голосовой звонок"
-                disabled={!selectedChat || selectedChat.chat_type !== 'direct'}
-              />
-              <Button
-                type="text"
-                onClick={() => selectedChat && startCall('video', selectedChat.id, selectedChat.chat_type)}
-                icon={<Video size={18} />}
-                title="Видео звонок"
-                disabled={!selectedChat || selectedChat.chat_type !== 'direct'}
-              />
+              {selectedChat.chat_type !== 'favorites' && (
+                <>
+                  <Button
+                    type="text"
+                    onClick={() => selectedChat && startCall('voice', selectedChat.id, selectedChat.chat_type)}
+                    icon={<Phone size={18} />}
+                    title="Голосовой звонок"
+                    disabled={!selectedChat || selectedChat.chat_type !== 'direct'}
+                  />
+                  <Button
+                    type="text"
+                    onClick={() => selectedChat && startCall('video', selectedChat.id, selectedChat.chat_type)}
+                    icon={<Video size={18} />}
+                    title="Видео звонок"
+                    disabled={!selectedChat || selectedChat.chat_type !== 'direct'}
+                  />
+                </>
+              )}
               <Button
                 type="text"
                 onClick={() => setSidebarVisible((prev) => !prev)}

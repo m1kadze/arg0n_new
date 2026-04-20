@@ -107,10 +107,37 @@
   font-weight: 600;
   font-size: 14px;
   color: var(--tg-text);
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.chat-verified-icon {
+  display: inline-block;
+  flex-shrink: 0;
+  vertical-align: middle;
+}
+
+.chat-item.active .chat-verified-icon path,
+.chat-item.active .chat-verified-icon {
+  color: #ffffff;
+}
+
+.chat-header-title {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
 }
 
 .chat-item-sub {
   font-size: 12px;
   color: var(--tg-hint);
   margin-top: 2px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
