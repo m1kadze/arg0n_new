@@ -1,12 +1,12 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
-import { Pause, Play } from 'lucide-react';
+import { Pause, Play, Languages } from 'lucide-react';
 
 interface AudioPlayerProps {
   src: string;
   title?: string;
 }
 
-const BAR_COUNT = 44;
+const BAR_COUNT = 48;
 
 /* ---------- deterministic waveform generator ---------- */
 
@@ -29,10 +29,8 @@ const makeBars = (seedSource: string, count: number): number[] => {
     seed >>>= 0;
     seed ^= seed << 5;
     seed >>>= 0;
-    // 22..100
     raw.push(22 + (seed % 79));
   }
-  // Moving-average smoothing — voice memos look organic, not spiky
   const smoothed = raw.map((_, i) => {
     const a = raw[Math.max(0, i - 1)];
     const b = raw[i];
@@ -51,12 +49,16 @@ const formatTime = (value: number): string => {
 
 /* ---------- component ---------- */
 
+type TranscribeState = 'idle' | 'loading' | 'done' | 'unavailable';
+
 export const AudioPlayer: React.FC<AudioPlayerProps> = ({ src, title }) => {
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const waveRef = useRef<HTMLDivElement | null>(null);
   const [isPlaying, setIsPlaying] = useState(false);
   const [duration, setDuration] = useState(0);
   const [currentTime, setCurrentTime] = useState(0);
+  const [transcribeState, setTranscribeState] = useState<TranscribeState>('idle');
+  const [transcript, setTranscript] = useState<string>('');
 
   const bars = useMemo(() => makeBars(src, BAR_COUNT), [src]);
 
@@ -124,9 +126,32 @@ export const AudioPlayer: React.FC<AudioPlayerProps> = ({ src, title }) => {
     }
   };
 
+  const handleTranscribe = async () => {
+    if (transcribeState === 'loading') return;
+    if (transcribeState === 'done' || transcribeState === 'unavailable') {
+      setTranscribeState('idle');
+      setTranscript('');
+      return;
+    }
+    setTranscribeState('loading');
+    try {
+      const res = await fetch('/api/transcribe', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ src }),
+      });
+      if (!res.ok) throw new Error(String(res.status));
+      const data = (await res.json()) as { text?: string };
+      setTranscript(data.text || '');
+      setTranscribeState('done');
+    } catch {
+      setTranscript('Транскрибация пока недоступна — требуется STT-сервис на сервере.');
+      setTranscribeState('unavailable');
+    }
+  };
+
   const progress = duration > 0 ? currentTime / duration : 0;
   const progressPct = Math.max(0, Math.min(1, progress)) * 100;
-  const displayTime = currentTime > 0 ? currentTime : duration;
 
   return (
     <div className={`voice-player ${isPlaying ? 'is-playing' : ''}`}>
@@ -139,8 +164,7 @@ export const AudioPlayer: React.FC<AudioPlayerProps> = ({ src, title }) => {
         aria-label={isPlaying ? 'Пауза' : 'Воспроизвести'}
         aria-pressed={isPlaying}
       >
-        <span className="voice-player__btn-ripple" aria-hidden />
-        {isPlaying ? <Pause size={15} /> : <Play size={15} />}
+        {isPlaying ? <Pause size={16} fill="currentColor" /> : <Play size={16} fill="currentColor" />}
       </button>
 
       <div className="voice-player__body">
@@ -178,12 +202,35 @@ export const AudioPlayer: React.FC<AudioPlayerProps> = ({ src, title }) => {
               />
             ))}
           </div>
+          <span className="voice-player__thumb" aria-hidden />
         </div>
 
-        <div className="voice-player__time" aria-live="off">
-          {formatTime(displayTime)}
+        <div className="voice-player__meta-row">
+          <span className="voice-player__time">
+            {formatTime(currentTime)}
+            {!isPlaying && currentTime === 0 && <span className="voice-player__unread-dot" />}
+          </span>
         </div>
+
+        {transcribeState !== 'idle' && (
+          <div
+            className={`voice-player__transcript voice-player__transcript--${transcribeState}`}
+            aria-live="polite"
+          >
+            {transcribeState === 'loading' ? 'Распознаём…' : transcript}
+          </div>
+        )}
       </div>
+
+      <button
+        type="button"
+        className={`voice-player__transcribe ${transcribeState !== 'idle' ? 'is-active' : ''}`}
+        onClick={handleTranscribe}
+        aria-label="Транскрибация"
+        title="Транскрибация"
+      >
+        <Languages size={14} strokeWidth={2} />
+      </button>
     </div>
   );
 };
