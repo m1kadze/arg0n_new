@@ -562,6 +562,7 @@ export const ChatScreen: React.FC<ChatScreenProps> = ({
   // --- Handlers ---
   const handleSelectChat = (chatId: number) => {
     setSelectedChatId(chatId);
+    setSidebarVisible(true);
   };
 
   const handleStartChat = async (userId: number) => {

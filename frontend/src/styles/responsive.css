@@ -1,17 +1,111 @@
+/* Tablet: collapse the right profile column */
+@media (max-width: 1200px) {
+  .chat-app,
+  .chat-app.chat-app--sidebar-hidden {
+    grid-template-columns: var(--tg-sidebar-w) minmax(0, 1fr) 0;
+  }
+  .chat-profile {
+    display: none;
+  }
+}
+
+/* Narrow tablet: tighten sidebar */
 @media (max-width: 900px) {
-  .chat-app {
+  :root {
+    --tg-sidebar-w: 22rem;
+  }
+  .chat-messages {
+    padding: 14px 4% 10px;
+  }
+  .message {
+    max-width: 82%;
+  }
+}
+
+/* Mobile: single-pane stack.
+   When a chat is open, chat-header exists — show main; hide sidebar.
+   Otherwise show sidebar, hide empty main. */
+@media (max-width: 720px) {
+  .chat-app,
+  .chat-app.chat-app--sidebar-hidden {
     grid-template-columns: 1fr;
   }
 
-  .chat-sidebar {
-    min-height: auto;
+  .chat-sidebar,
+  .chat-main {
+    grid-column: 1;
+    grid-row: 1;
+    width: 100%;
+    min-width: 0;
   }
 
-  .chat-profile {
+  /* Chat selected — hide list, show conversation */
+  .chat-app:has(.chat-main .chat-header):not(.chat-app--sidebar-hidden) .chat-sidebar {
     display: none;
+  }
+  .chat-app:has(.chat-main .chat-header):not(.chat-app--sidebar-hidden) .chat-main {
+    display: flex;
+  }
+
+  /* No chat, or user tapped back (sidebar-hidden class): show list */
+  .chat-app:not(:has(.chat-main .chat-header)) .chat-main,
+  .chat-app.chat-app--sidebar-hidden .chat-main {
+    display: none;
+  }
+  .chat-app.chat-app--sidebar-hidden .chat-sidebar {
+    display: flex;
+  }
+
+  .chat-header { padding: 0 10px; }
+  .header-actions .ant-btn { height: 38px !important; width: 38px !important; min-width: 38px !important; }
+
+  .chat-messages {
+    padding: 12px 10px 8px;
+  }
+
+  .message {
+    max-width: 86%;
+    font-size: 14px;
+  }
+
+  .chat-composer {
+    padding: 8px 10px 10px;
+  }
+
+  .composer-row .ant-btn {
+    height: 44px !important;
+    width: 44px !important;
+    min-width: 44px !important;
+  }
+
+  .visual-input {
+    min-height: 44px;
+    border-radius: 20px;
+  }
+
+  .composer-editable,
+  .composer-visual-layer {
+    padding: 11px 14px;
+    font-size: 15px;
+  }
+
+  .avatar-circle {
+    width: 48px;
+    height: 48px;
+    font-size: 17px;
   }
 
   .emoji-grid {
     grid-template-columns: repeat(6, minmax(0, 1fr));
+  }
+
+  .pinned-count { display: none; }
+}
+
+/* Respect reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.001ms !important;
+    transition-duration: 0.001ms !important;
   }
 }
